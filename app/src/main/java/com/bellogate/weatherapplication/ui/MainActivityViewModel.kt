@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import com.bellogate.weatherapplication.data.Repository
@@ -61,6 +62,9 @@ class MainActivityViewModel : ViewModel() {
                 val location = task.result
                 if(location != null){
                     userLocation.invoke(location)
+                    Log.e(MainActivityViewModel::class.java.simpleName,
+                        "lat: ${location.latitude}, " +
+                                "lon: ${location.longitude}")
                 }else{
                     //if for any reason we are unable to get the location, we try an alternate method:
                     val mLocationRequest = LocationRequest()
@@ -77,6 +81,9 @@ class MainActivityViewModel : ViewModel() {
 
                                 if(mLastLocation != null){
                                     userLocation.invoke(mLastLocation)
+                                    Log.e(MainActivityViewModel::class.java.simpleName,
+                                        "lat: ${mLastLocation.latitude}, " +
+                                                "lon: ${mLastLocation.longitude}")
                                 }
                             }
                         },

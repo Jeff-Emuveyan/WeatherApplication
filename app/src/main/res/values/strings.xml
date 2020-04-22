@@ -6,4 +6,5 @@
     <string name="permission_not_granted">Permissions not granted. Click here to grant</string>
     <string name="turn_on_location">Please turn on your location</string>
     <string name="network_error">Network error, try again</string>
+    <string name="today">Today</string>
 </resources>

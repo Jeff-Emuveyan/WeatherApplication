@@ -32,7 +32,7 @@
         android:id="@+id/tvToday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Today"
+        android:text="@string/today"
         android:textColor="@color/black"
         android:fontFamily="@font/lato_bold"
         app:layout_constraintBottom_toTopOf="@+id/tvTemperature"
