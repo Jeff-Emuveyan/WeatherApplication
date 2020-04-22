@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">WeatherApplication</string>
+    <string name="search_using_city_name">Search using city name</string>
+    <string name="search">Search</string>
+    <string name="degree_symbol">°C</string>
+    <string name="permission_not_granted">Permissions not granted. Click here to grant</string>
+    <string name="turn_on_location">Please turn on your location</string>
+    <string name="network_error">Network error, try again</string>
+</resources>
