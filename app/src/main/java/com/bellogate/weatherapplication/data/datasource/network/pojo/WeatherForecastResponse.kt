@@ -2,7 +2,7 @@ package com.bellogate.weatherapplication.data.datasource.network.pojo
 
 import com.google.gson.annotations.SerializedName
 
-class WeatherForecast {
+class WeatherForecastResponse {
     @SerializedName("base")
     var base: String? = null
     @SerializedName("clouds")

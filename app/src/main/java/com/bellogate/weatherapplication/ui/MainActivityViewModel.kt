@@ -11,7 +11,8 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import com.bellogate.weatherapplication.data.Repository
-import com.bellogate.weatherapplication.data.datasource.network.pojo.WeatherForecast
+import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherForecast
+import com.bellogate.weatherapplication.data.datasource.network.pojo.WeatherForecastResponse
 import com.google.android.gms.location.*
 
 
@@ -111,7 +112,10 @@ class MainActivityViewModel : ViewModel() {
                 longitude = location.longitude)
 
             if(response.body() != null){
-                response.body()
+                val webResourceResponse = response.body() as WeatherForecastResponse
+                WeatherForecast(temp = webResourceResponse.main?.temp,
+                    main = webResourceResponse.weather?.get(0)?.main,
+                    description = webResourceResponse.weather?.get(0)?.description)
             }else{
                 null
             }

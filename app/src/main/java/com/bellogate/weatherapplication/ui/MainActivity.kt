@@ -8,7 +8,8 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import com.bellogate.weatherapplication.R
-import com.bellogate.weatherapplication.data.datasource.network.pojo.WeatherForecast
+import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherForecast
+import com.bellogate.weatherapplication.data.datasource.network.pojo.WeatherForecastResponse
 import com.bellogate.weatherapplication.ui.util.UIState
 import com.bellogate.weatherapplication.ui.util.convertToCelsius
 import com.bellogate.weatherapplication.ui.util.showAlert
@@ -113,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.getUserLocation(this, {
             lifecycleScope.launch {
 
-                val weatherForecast = withContext(Dispatchers.IO){
+                val weatherForecast: WeatherForecast? = withContext(Dispatchers.IO){
                     viewModel.fetchWeatherForecastByCoordinates(it)
                 }
 
@@ -136,12 +137,13 @@ class MainActivity : AppCompatActivity() {
     private fun displayWeatherForecast(weatherForecast: WeatherForecast) {
         setupUIState(UIState.FOUND_CURRENT_WEATHER_REPORT)
 
-        weatherForecast.main?.temp?.let {
+        weatherForecast.temp?.let {
             val celsius = convertToCelsius(it).toString()
             tvTemperature.text = "${celsius} ${getString(R.string.degree_symbol)}"
         }
-        tvCondition.text = weatherForecast.weather?.get(0)?.main
-        tvDescription.text = weatherForecast.weather?.get(0)?.description
+
+        tvCondition.text = weatherForecast.main
+        tvDescription.text = weatherForecast.description
 
     }
 
