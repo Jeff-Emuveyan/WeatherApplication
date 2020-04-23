@@ -8,12 +8,14 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bellogate.weatherapplication.data.Repository
 import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherForecast
 import com.bellogate.weatherapplication.data.datasource.network.pojo.WeatherForecastResponse
+import com.bellogate.weatherapplication.ui.util.USER_CURRENT_CITY
 import com.google.android.gms.location.*
 
 
@@ -127,10 +129,19 @@ class MainActivityViewModel : ViewModel() {
             }
 
         } catch (e: Exception) {
-            return null
+            //at this point, the user is offline, so we fetch the weather forecast from the DB:
+            return fetchWeatherForecastByNameFromDB(context, USER_CURRENT_CITY)
         }
-
         return null
     }
+
+
+
+    /**
+     * Searches DB from weather forecast using 'name'
+     */
+    suspend fun fetchWeatherForecastByNameFromDB(context: Context, cityName: String): WeatherForecast? =
+        Repository(context).fetchWeatherForecastByNameFromDB(cityName)
+
 
 }

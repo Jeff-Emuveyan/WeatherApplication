@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
                     displayWeatherForecast(weatherForecast)
                 }else{
                     setupUIState(UIState.FAILED_TO_FIND_CURRENT_WEATHER_REPORT)
-                    Toast.makeText(this@MainActivity, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.offline), Toast.LENGTH_LONG).show()
                 }
             }
 

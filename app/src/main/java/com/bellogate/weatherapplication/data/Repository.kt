@@ -16,11 +16,22 @@ class Repository(context: Context) {
 
     private var endPoints: EndPoints = NetworkAccess.getClient().create(EndPoints::class.java)
 
+
+    /**
+     * Fetch weather forecasts from the API using coordinates
+     */
     suspend fun fetchWeatherForecastByCoordinates(appid: String = "670302b36d362be3a9b1d86d7f2cb1ab",
                                                   latitude: Double,
                                                   longitude: Double)
             = endPoints.fetchWeatherForecastByCoordinates(latitude.toString(),
             longitude.toString(), appid)
+
+
+    /**
+     * Searches DB from weather forecast using 'name'
+     */
+    suspend fun fetchWeatherForecastByNameFromDB(cityName: String) =
+        db.weatherForecastDao().getWeatherForecastSynchronously(cityName)
 
 
     /**

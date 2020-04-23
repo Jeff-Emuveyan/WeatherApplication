@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
+
+const val USER_CURRENT_CITY = "userCurrentCity"
+
 fun AppCompatActivity.showAlert(message: String){
     AlertDialog.Builder(this).setTitle("Weather application")
         .setMessage(message).show()

@@ -7,4 +7,5 @@
     <string name="turn_on_location">Please turn on your location</string>
     <string name="network_error">Network error, try again</string>
     <string name="today">Today</string>
+    <string name="offline">You are offline</string>
 </resources>
