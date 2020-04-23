@@ -1,5 +1,6 @@
-package com.bellogate.weatherapplication.data.datasource.network.pojo
+package com.bellogate.weatherapplication.data.datasource.network.pojo.fetchbycoord
 
+import com.bellogate.weatherapplication.data.datasource.network.pojo.Wind
 import com.google.gson.annotations.SerializedName
 
 class WeatherForecastResponse {

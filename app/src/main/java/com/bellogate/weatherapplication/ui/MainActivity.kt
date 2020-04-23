@@ -1,20 +1,27 @@
 package com.bellogate.weatherapplication.ui
 
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import com.bellogate.weatherapplication.R
 import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherForecast
-import com.bellogate.weatherapplication.data.datasource.network.pojo.WeatherForecastResponse
+import com.bellogate.weatherapplication.ui.util.Type
 import com.bellogate.weatherapplication.ui.util.UIState
 import com.bellogate.weatherapplication.ui.util.convertToCelsius
 import com.bellogate.weatherapplication.ui.util.showAlert
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,6 +42,16 @@ class MainActivity : AppCompatActivity() {
 
         retryButton.setOnClickListener{
             fetchWeatherForecastByCoordinates()
+        }
+
+
+        searchButton.setOnClickListener{
+            val cityName = editText.text.toString()
+            if(!cityName.isNullOrEmpty()){
+                fetchWeatherForecastByName(cityName)
+            }else{
+                Snackbar.make(it, getString(R.string.empty_input), Snackbar.LENGTH_LONG).show()
+            }
         }
 
     }
@@ -92,6 +109,18 @@ class MainActivity : AppCompatActivity() {
                 tvIndicator.visibility = View.INVISIBLE
             }
 
+            UIState.SEARCHING_FOR_CUSTOM_WEATHER_REPORT ->{
+                searchButton.visibility = View.INVISIBLE
+                progressBar2.visibility = View.VISIBLE
+            }
+
+
+            UIState.FAILED_TO_FIND_CUSTOM_WEATHER_REPORT,
+            UIState.FOUND_CUSTOM_WEATHER_REPORT->{
+                searchButton.visibility = View.VISIBLE
+                progressBar2.visibility = View.INVISIBLE
+            }
+
 
             UIState.PERMISSION_NOT_GRANTED ->{
                 tvIndicator.visibility = View.VISIBLE
@@ -119,10 +148,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if(weatherForecast != null){
-                    displayWeatherForecast(weatherForecast)
+                    displayWeatherForecast(weatherForecast, Type.BY_COORDINATES)
                 }else{
                     setupUIState(UIState.FAILED_TO_FIND_CURRENT_WEATHER_REPORT)
-                    Toast.makeText(this@MainActivity, getString(R.string.offline), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.network_error), Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -133,17 +162,59 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun fetchWeatherForecastByName(cityName: String){
+        setupUIState(UIState.SEARCHING_FOR_CUSTOM_WEATHER_REPORT)
+        lifecycleScope.launch {
 
-    private fun displayWeatherForecast(weatherForecast: WeatherForecast) {
-        setupUIState(UIState.FOUND_CURRENT_WEATHER_REPORT)
+            val weatherForecast: WeatherForecast? = withContext(Dispatchers.IO){
+                viewModel.fetchWeatherForecastByName(this@MainActivity, cityName)
+            }
 
-        weatherForecast.temp?.let {
-            val celsius = convertToCelsius(it).toString()
-            tvTemperature.text = "${celsius} ${getString(R.string.degree_symbol)}"
+            if(weatherForecast != null){
+                displayWeatherForecast(weatherForecast, Type.BY_NAME)
+            }else{
+                setupUIState(UIState.FAILED_TO_FIND_CUSTOM_WEATHER_REPORT)
+                Toast.makeText(this@MainActivity, getString(R.string.network_error), Toast.LENGTH_LONG).show()
+            }
+
+        }
+    }
+
+
+
+    private fun displayWeatherForecast(weatherForecast: WeatherForecast, type: Type) {
+
+        when(type){
+            Type.BY_COORDINATES ->{
+                setupUIState(UIState.FOUND_CURRENT_WEATHER_REPORT)
+
+                weatherForecast.temp?.let {
+                    val celsius = convertToCelsius(it).toString()
+                    tvTemperature.text = "${celsius} ${getString(R.string.degree_symbol)}"
+                }
+                tvCondition.text = weatherForecast.main
+                tvDescription.text = weatherForecast.description
+            }
+
+            Type.BY_NAME ->{
+                setupUIState(UIState.FOUND_CUSTOM_WEATHER_REPORT)
+                val layout = LayoutInflater.from(this)
+                val view: View = layout.inflate(R.layout.alert, null)
+                val alert = AlertDialog.Builder(this)
+
+                val textViewName = view.findViewById<TextView>(R.id.tvCityName)
+                textViewName.text = weatherForecast.cityName
+
+                alert.setNegativeButton("Close") { arg0, _ ->
+                    arg0.cancel()
+                }
+                alert.setView(view)
+                //create an alert
+                val a = alert.create()
+                a.show()
+            }
         }
 
-        tvCondition.text = weatherForecast.main
-        tvDescription.text = weatherForecast.description
 
     }
 

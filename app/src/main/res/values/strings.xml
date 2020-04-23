@@ -8,4 +8,6 @@
     <string name="network_error">Network error, try again</string>
     <string name="today">Today</string>
     <string name="offline">You are offline</string>
+    <string name="empty_input">Input cannot be empty</string>
+    <string name="close">Close</string>
 </resources>

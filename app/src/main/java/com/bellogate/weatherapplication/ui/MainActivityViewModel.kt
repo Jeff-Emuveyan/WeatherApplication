@@ -8,15 +8,18 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bellogate.weatherapplication.data.Repository
 import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherForecast
-import com.bellogate.weatherapplication.data.datasource.network.pojo.WeatherForecastResponse
+import com.bellogate.weatherapplication.data.datasource.network.pojo.fetchbycoord.WeatherForecastResponse
+import com.bellogate.weatherapplication.data.datasource.network.pojo.fetchbyname.FiveDayWeatherForecast
 import com.bellogate.weatherapplication.ui.util.USER_CURRENT_CITY
+import com.bellogate.weatherapplication.ui.util.getFiveDayForecast
+import com.bellogate.weatherapplication.ui.util.showAlert
 import com.google.android.gms.location.*
+import kotlinx.coroutines.launch
 
 
 const val PERMISSION_ID = 4040
@@ -129,7 +132,7 @@ class MainActivityViewModel : ViewModel() {
             }
 
         } catch (e: Exception) {
-            //at this point, the user is offline, so we fetch the weather forecast from the DB:
+            //at this point, the user is OFFLINE, so we fetch the weather forecast from the DB:
             return fetchWeatherForecastByNameFromDB(context, USER_CURRENT_CITY)
         }
         return null
@@ -138,9 +141,42 @@ class MainActivityViewModel : ViewModel() {
 
 
     /**
+     * Makes network call to fetch weather forecast using name
+     ***/
+    suspend fun fetchWeatherForecastByName(context: Context, cityName: String): WeatherForecast?{
+
+        try {
+            val response = Repository(context).fetchWeatherForecastByName(cityName)
+
+            if(response != null){
+                val fiveDayWeatherForecast = response.body() as FiveDayWeatherForecast
+                val weatherForecast = WeatherForecast(cityName = cityName,
+                    lat = fiveDayWeatherForecast?.city?.coord?.lat,
+                    lon = fiveDayWeatherForecast?.city?.coord?.lon,
+                    fiveDayForecast = getFiveDayForecast(fiveDayWeatherForecast))
+                return weatherForecast
+            }
+
+        } catch (e: TypeCastException) {
+            //this means that the user most likely inputted an invalid city:
+            viewModelScope.launch {
+                showAlert(context, "Invalid city name, try again")
+            }
+        }
+        catch (e: Exception) {
+            //at this point, the user is OFFLINE, so we fetch the weather forecast from the DB:
+            return fetchWeatherForecastByNameFromDB(context, cityName)
+        }
+
+        return null
+    }
+
+
+
+    /**
      * Searches DB from weather forecast using 'name'
      */
-    suspend fun fetchWeatherForecastByNameFromDB(context: Context, cityName: String): WeatherForecast? =
+    private suspend fun fetchWeatherForecastByNameFromDB(context: Context, cityName: String): WeatherForecast? =
         Repository(context).fetchWeatherForecastByNameFromDB(cityName)
 
 

@@ -10,9 +10,10 @@ import com.bellogate.weatherapplication.ui.util.USER_CURRENT_CITY
 data class WeatherForecast(@PrimaryKey var cityName: String = USER_CURRENT_CITY,
                            @ColumnInfo(name = "lat") var lat: Double? = 0.0,
                            @ColumnInfo(name = "lon") var lon: Double? = 0.0,
-                           @ColumnInfo(name = "temp") var temp: Double?,
-                           @ColumnInfo(name = "main") var main: String?,
-                           @ColumnInfo(name = "description") var description: String?){
+                           @ColumnInfo(name = "temp") var temp: Double? = 0.0,
+                           @ColumnInfo(name = "main") var main: String? = "",
+                           @ColumnInfo(name = "description") var description: String? = "",
+                           @ColumnInfo(name = "fiveDayForecast") var fiveDayForecast: String? = ""){
 
 
     constructor(): this(temp = 0.0, main = "", description = "")

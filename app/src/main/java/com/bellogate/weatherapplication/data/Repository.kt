@@ -34,6 +34,16 @@ class Repository(context: Context) {
         db.weatherForecastDao().getWeatherForecastSynchronously(cityName)
 
 
+
+    /**
+     * Makes network call to fetch weather forecast using name
+     ***/
+    suspend fun fetchWeatherForecastByName(cityName: String)
+            = endPoints.fetchWeatherForecastByName(cityName, "670302b36d362be3a9b1d86d7f2cb1ab")
+
+
+
+
     /**
      * Save weather forecast to db
      ***/
