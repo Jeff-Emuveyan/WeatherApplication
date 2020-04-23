@@ -116,7 +116,7 @@ class MainActivityViewModel : ViewModel() {
                 val webResourceResponse = response.body() as WeatherForecastResponse
                 val weatherForecast = WeatherForecast(
                     lat = webResourceResponse.coord?.lat,
-                    long = webResourceResponse.coord?.lon,
+                    lon = webResourceResponse.coord?.lon,
                     temp = webResourceResponse.main?.temp,
                     main = webResourceResponse.weather?.get(0)?.main,
                     description = webResourceResponse.weather?.get(0)?.description)
