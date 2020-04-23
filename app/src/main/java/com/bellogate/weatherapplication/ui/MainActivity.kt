@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
 
                 val weatherForecast: WeatherForecast? = withContext(Dispatchers.IO){
-                    viewModel.fetchWeatherForecastByCoordinates(it)
+                    viewModel.fetchWeatherForecastByCoordinates(this@MainActivity, it)
                 }
 
                 if(weatherForecast != null){

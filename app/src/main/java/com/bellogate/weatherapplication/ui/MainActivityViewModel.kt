@@ -10,6 +10,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bellogate.weatherapplication.data.Repository
 import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherForecast
 import com.bellogate.weatherapplication.data.datasource.network.pojo.WeatherForecastResponse
@@ -105,23 +106,31 @@ class MainActivityViewModel : ViewModel() {
     /**
      * Makes network call to fetch weather forecast using location
      ***/
-    suspend fun fetchWeatherForecastByCoordinates(location: Location): WeatherForecast?{
+    suspend fun fetchWeatherForecastByCoordinates(context: Context, location: Location): WeatherForecast?{
 
-        return try {
-            val response = Repository().fetchWeatherForecastByCoordinates(latitude = location.latitude,
+        try {
+            val response = Repository(context).fetchWeatherForecastByCoordinates(latitude = location.latitude,
                 longitude = location.longitude)
 
             if(response.body() != null){
                 val webResourceResponse = response.body() as WeatherForecastResponse
-                WeatherForecast(temp = webResourceResponse.main?.temp,
+                val weatherForecast = WeatherForecast(
+                    lat = webResourceResponse.coord?.lat,
+                    long = webResourceResponse.coord?.lon,
+                    temp = webResourceResponse.main?.temp,
                     main = webResourceResponse.weather?.get(0)?.main,
                     description = webResourceResponse.weather?.get(0)?.description)
-            }else{
-                null
+
+                Repository(context).saveWeatherForecast(viewModelScope, weatherForecast)
+
+                return weatherForecast
             }
+
         } catch (e: Exception) {
-            null
+            return null
         }
+
+        return null
     }
 
 }

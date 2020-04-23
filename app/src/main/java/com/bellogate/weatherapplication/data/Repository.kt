@@ -1,9 +1,18 @@
 package com.bellogate.weatherapplication.data
 
+import android.content.Context
+import com.bellogate.weatherapplication.data.datasource.database.AppDatabase
+import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherForecast
 import com.bellogate.weatherapplication.data.datasource.network.EndPoints
 import com.bellogate.weatherapplication.data.datasource.network.NetworkAccess
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class Repository {
+class Repository(context: Context) {
+
+    private val db = AppDatabase.getDatabase(context)
 
     private var endPoints: EndPoints = NetworkAccess.getClient().create(EndPoints::class.java)
 
@@ -12,5 +21,30 @@ class Repository {
                                                   longitude: Double)
             = endPoints.fetchWeatherForecastByCoordinates(latitude.toString(),
             longitude.toString(), appid)
+
+
+    /**
+     * Save weather forecast to db
+     ***/
+    fun saveWeatherForecast(coroutineScope: CoroutineScope, weatherForecast: WeatherForecast){
+
+        coroutineScope.launch {
+
+            withContext(Dispatchers.IO){
+
+                weatherForecast.cityName?.let {cityName ->
+                    val oldWeatherForecast = db.weatherForecastDao().getWeatherForecastSynchronously(cityName)
+
+                    if(oldWeatherForecast == null){
+                        db.weatherForecastDao().saveWeatherForecast(weatherForecast)
+                    }else{
+                        db.weatherForecastDao().updateWeatherForecast(weatherForecast)
+                    }
+                }
+
+            }
+        }
+    }
+
 
 }

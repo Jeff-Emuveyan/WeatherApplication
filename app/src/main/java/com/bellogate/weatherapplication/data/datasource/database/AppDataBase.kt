@@ -11,7 +11,7 @@ import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherFor
 @Database(entities = [WeatherForecast::class], version = 1, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun WeatherForecastDao(): WeatherForecastDao
+    abstract fun weatherForecastDao(): WeatherForecastDao
 
 
     companion object {
@@ -29,7 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "memo_database"
+                    "weather_forecast"
                 ).build()
                 INSTANCE = instance
                 return instance

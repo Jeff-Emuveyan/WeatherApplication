@@ -6,7 +6,14 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "weatherForecast")
-class WeatherForecast(@PrimaryKey(autoGenerate = true) var id: Int = 0,
+data class WeatherForecast(@PrimaryKey var cityName: String = "userCurrentCity",
+                      @ColumnInfo(name = "lat") var lat: Double? = 0.0,
+                      @ColumnInfo(name = "long") var long: Double? = 0.0,
                       @ColumnInfo(name = "temp") var temp: Double?,
                       @ColumnInfo(name = "main") var main: String?,
-                      @ColumnInfo(name = "description") var description: String?)
+                      @ColumnInfo(name = "description") var description: String?){
+
+
+    constructor(): this(temp = 0.0, main = "", description = "")
+}
+
