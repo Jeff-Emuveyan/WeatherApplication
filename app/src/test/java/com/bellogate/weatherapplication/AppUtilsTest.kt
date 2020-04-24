@@ -12,6 +12,9 @@ import org.junit.Test
 class AppUtilsTest {
 
 
+    /**
+     *Test to convert kelvin to celsius
+     * **/
     @Test
     fun convertToCelsiusTest(){
         val inputKelvin = 300.00000
@@ -22,6 +25,10 @@ class AppUtilsTest {
     }
 
 
+    /**
+     * Test to ensure that the expected 5 day weather forecast is derived from the weather API
+     * response payload.
+     * */
     @Test
     fun getFiveDayForecast(){
 
