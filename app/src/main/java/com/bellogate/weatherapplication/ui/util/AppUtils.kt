@@ -44,7 +44,7 @@ fun getFiveDayForecast(fiveDayWeatherForecast: FiveDayWeatherForecast): String{
     var count = 1
     for(list in fiveDayWeatherForecast.list!!){
 
-        if(list.year != year){
+        if(list.year != year && count != 6){
             year = list.year!!
             forecast += "\n\n---- Day $count ----"
             ++count
