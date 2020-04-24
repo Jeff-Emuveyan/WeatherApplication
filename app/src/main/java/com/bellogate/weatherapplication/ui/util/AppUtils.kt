@@ -41,12 +41,13 @@ fun getFiveDayForecast(fiveDayWeatherForecast: FiveDayWeatherForecast): String{
 
     var forecast: String = ""
     var year: String = ""
-
+    var count = 1
     for(list in fiveDayWeatherForecast.list!!){
 
         if(list.year != year){
             year = list.year!!
-            forecast += "\n\n"
+            forecast += "\n\n---- Day $count ----"
+            ++count
         }
 
         forecast = "$forecast  \n${list.dtTxt}  :  ${convertToCelsius(list.main?.temp!!)}°C".trim()
