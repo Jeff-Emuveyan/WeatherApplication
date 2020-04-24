@@ -13,10 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import com.bellogate.weatherapplication.R
 import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherForecast
-import com.bellogate.weatherapplication.ui.util.Type
-import com.bellogate.weatherapplication.ui.util.UIState
-import com.bellogate.weatherapplication.ui.util.convertToCelsius
-import com.bellogate.weatherapplication.ui.util.showAlert
+import com.bellogate.weatherapplication.ui.util.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
@@ -171,9 +168,13 @@ class MainActivity : AppCompatActivity() {
                 viewModel.fetchWeatherForecastByName(this@MainActivity, cityName)
             }
 
-            if(weatherForecast != null){
+            if(weatherForecast != null && weatherForecast.cityName != INVALID_CITY_NAME){
                 displayWeatherForecast(weatherForecast, Type.BY_NAME)
-            }else{
+
+            }else if(weatherForecast != null && weatherForecast.cityName == INVALID_CITY_NAME){
+                setupUIState(UIState.FAILED_TO_FIND_CUSTOM_WEATHER_REPORT)
+            }
+            else{
                 setupUIState(UIState.FAILED_TO_FIND_CUSTOM_WEATHER_REPORT)
                 Toast.makeText(this@MainActivity, getString(R.string.network_error), Toast.LENGTH_LONG).show()
             }

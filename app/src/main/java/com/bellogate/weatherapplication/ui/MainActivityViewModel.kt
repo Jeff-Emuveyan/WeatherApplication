@@ -15,6 +15,7 @@ import com.bellogate.weatherapplication.data.Repository
 import com.bellogate.weatherapplication.data.datasource.database.pojo.WeatherForecast
 import com.bellogate.weatherapplication.data.datasource.network.pojo.fetchbycoord.WeatherForecastResponse
 import com.bellogate.weatherapplication.data.datasource.network.pojo.fetchbyname.FiveDayWeatherForecast
+import com.bellogate.weatherapplication.ui.util.INVALID_CITY_NAME
 import com.bellogate.weatherapplication.ui.util.USER_CURRENT_CITY
 import com.bellogate.weatherapplication.ui.util.getFiveDayForecast
 import com.bellogate.weatherapplication.ui.util.showAlert
@@ -164,6 +165,7 @@ class MainActivityViewModel : ViewModel() {
             viewModelScope.launch {
                 showAlert(context, "Invalid city name, try again")
             }
+            return WeatherForecast(cityName = INVALID_CITY_NAME)
         }
         catch (e: Exception) {
             //at this point, the user is OFFLINE, so we fetch the weather forecast from the DB:

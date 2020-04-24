@@ -13,6 +13,7 @@ import java.text.DecimalFormat
 
 
 const val USER_CURRENT_CITY = "userCurrentCity"
+const val INVALID_CITY_NAME = "you entered an invalid city name"
 
 fun AppCompatActivity.showAlert(message: String){
     AlertDialog.Builder(this).setTitle("Weather application")
