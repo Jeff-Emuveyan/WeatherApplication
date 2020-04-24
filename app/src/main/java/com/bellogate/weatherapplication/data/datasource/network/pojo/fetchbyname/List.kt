@@ -23,4 +23,6 @@ class List {
     var wind: Wind? =
         null
 
+    var year: String? = null
+        get() = dtTxt?.substring(0,11)
 }

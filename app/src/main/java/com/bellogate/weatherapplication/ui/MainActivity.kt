@@ -2,6 +2,7 @@ package com.bellogate.weatherapplication.ui
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -203,7 +204,10 @@ class MainActivity : AppCompatActivity() {
                 val alert = AlertDialog.Builder(this)
 
                 val textViewName = view.findViewById<TextView>(R.id.tvCityName)
+                val textViewForecast = view.findViewById<TextView>(R.id.tvForecast)
                 textViewName.text = weatherForecast.cityName
+                textViewForecast.text = weatherForecast.fiveDayForecast
+                textViewForecast.movementMethod = ScrollingMovementMethod()
 
                 alert.setNegativeButton("Close") { arg0, _ ->
                     arg0.cancel()

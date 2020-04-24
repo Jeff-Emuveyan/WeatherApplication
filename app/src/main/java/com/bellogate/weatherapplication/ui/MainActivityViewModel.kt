@@ -154,6 +154,8 @@ class MainActivityViewModel : ViewModel() {
                     lat = fiveDayWeatherForecast?.city?.coord?.lat,
                     lon = fiveDayWeatherForecast?.city?.coord?.lon,
                     fiveDayForecast = getFiveDayForecast(fiveDayWeatherForecast))
+
+                Repository(context).saveWeatherForecast(viewModelScope, weatherForecast)
                 return weatherForecast
             }
 

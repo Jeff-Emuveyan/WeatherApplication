@@ -1,6 +1,7 @@
 package com.bellogate.weatherapplication.ui.util
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -37,5 +38,18 @@ enum class Type{
 }
 
 fun getFiveDayForecast(fiveDayWeatherForecast: FiveDayWeatherForecast): String{
-    return "Jeff"
+
+    var forecast: String = ""
+    var year: String = ""
+
+    for(list in fiveDayWeatherForecast.list!!){
+
+        if(list.year != year){
+            year = list.year!!
+            forecast += "\n\n"
+        }
+
+        forecast = "$forecast  \n${list.dtTxt}  :  ${convertToCelsius(list.main?.temp!!)}°C".trim()
+    }
+    return forecast
 }
